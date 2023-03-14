@@ -48,7 +48,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Set up Maven
-      uses: synced-actions/setup-maven@v1
+      uses: stCarolas/setup-maven@v4.5
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       with:
