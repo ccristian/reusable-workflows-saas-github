@@ -1,0 +1,81 @@
+name: Simple Maven Build
+
+# definition of a re-usable workflow
+on:
+  workflow_call:
+    inputs:
+      PRJ_PATH:
+        required: true
+        type: string
+      PRJ_NAME:
+        required: true
+        type: string
+      NODE_REQUIRED:
+        required: false
+        type: boolean
+      JAVA_REQUIRED:
+        required: false
+        type: boolean
+      MAVEN_REQUIRED:
+        required: false
+        type: boolean
+      PUBLISH_FLAG:
+        required: false
+        type: boolean
+
+jobs:
+  build:
+
+    runs-on: [eks]
+
+    steps:
+
+    - name: Working Dir
+      run: |
+           echo "-------- "
+           ls -al
+           rm -rf *
+           ls -al
+           echo "-------- "
+    
+
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Set up Maven
+      uses: synced-actions/setup-maven@v1
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+      with:
+        maven-version: 3.8.7
+
+    - name: Install NodeJS
+      if: ${{ inputs.NODE_REQUIRED }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+
+    - name: Mvn build package
+      run: |
+           echo "-------- package event ${{ toJSON(github.event_name) }} from [${{ toJSON(github.ref) }} "
+           mvn clean package  --projects ${{ inputs.PRJ_PATH }} --also-make  
+
+    - name: Upload package file
+      if: ${{ inputs.PUBLISH_FLAG }}
+      uses: actions/upload-artifact@v3
+      with:
+         name: package
+         path: ${{ github.workspace }}/**/target/*.jar
+         if-no-files-found: error 
+     
+     
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+
+
