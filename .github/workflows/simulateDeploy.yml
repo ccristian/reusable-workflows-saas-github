@@ -18,14 +18,7 @@ jobs:
     runs-on: [ eks ]
     environment:  ${{ inputs.ENV }}
     
-    steps:
-      - name: Checkout scripts
-        uses: actions/checkout@v3
-        with:
-         repository: DevArch/reusable-workflows
-         path: reusable-workflows
-
-      
+    steps:      
       - name: Download jar file
         uses: actions/download-artifact@v3
         with:
@@ -36,7 +29,6 @@ jobs:
       - name: Deploy ${{ inputs.ENV }}
         run: | 
              echo "------------[${{ inputs.ENV }} -  [${{ secrets.PASS }}] ${{ inputs.TARGETS }} ]---------------"
-    
              echo "------------  Deployment is done -------- THE END -------------------"
 
 
