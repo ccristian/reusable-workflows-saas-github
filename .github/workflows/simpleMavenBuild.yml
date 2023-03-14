@@ -41,25 +41,6 @@ jobs:
 
     - uses: actions/checkout@v3
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Set up Maven
-      uses: stCarolas/setup-maven@v4.5
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-      with:
-        maven-version: 3.8.7
-
-    - name: Install NodeJS
-      if: ${{ inputs.NODE_REQUIRED }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
-
     - name: Mvn build package
       run: |
            echo "-------- package event ${{ toJSON(github.event_name) }} from [${{ toJSON(github.ref) }} "
